@@ -1,0 +1,43 @@
+import pandas as pd
+import xlrd
+import numpy as np
+
+ctx = "../data/"        # 상대경로 처리
+
+filename = ctx + 'CCTV_in_Seoul.csv'
+seoul_cctv = pd.read_csv(filename, encoding='UTF-8')
+# print(seoul_cctv.head())
+
+seoul_cctv_idx = seoul_cctv.columns
+# print(seoul_cctv_idx)
+"""
+기관명    소계  2013년도 이전  2014년  2015년  2016년
+0  강남구  2780       1292    430    584    932
+1  강동구   773        379     99    155    377
+2  강북구   748        369    120    138    204
+3  강서구   884        388    258    184     81
+4  관악구  1496        846    260    390    613
+"""
+
+seoul_cctv.rename(columns={seoul_cctv.columns[0] : '구별'}, inplace=True)
+# print(seoul_cctv.head())
+# print(seoul_cctv)
+
+seoul_pop = pd.read_excel(ctx + "population_in_Seoul.xls", encoding="UTF-8", header=2, usecols="B, D, G, J, N")
+print(seoul_pop)
+
+seoul_pop.rename(columns={seoul_pop.columns[0] : '구별'
+                    , seoul_pop.columns[1] : '인구수'
+                    , seoul_pop.columns[2] : '한국인'
+                    , seoul_pop.columns[3] : '외국인'
+                    , seoul_pop.columns[4] : '고령자'}, inplace=True)
+print(seoul_pop)
+
+seoul_cctv.sort_values(by='소계', ascending=True).head(5)
+seoul_pop.drop([0], inplace=True)
+seoul_pop['구별'].unique()                # 중복된 값이 있으면 합쳐진다.
+print(seoul_pop.head())
+
+seoul_pop['구별'].isnull()
+seoul_pop.drop([26], inplace=True)
+print(seoul_pop)
